@@ -1,0 +1,18 @@
+{
+  "name": "app-shipping-skills",
+  "owner": {
+    "name": "Kotaro Yamazaki"
+  },
+  "plugins": [
+    {
+      "name": "app-shipping-skills",
+      "source": "./",
+      "description": "Skills to build, submit and monetize mobile apps from an AI agent: TestFlight upload, App Store review submission, Google Play release, App Store header images, and AdMob setup.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Kotaro Yamazaki"
+      },
+      "license": "MIT"
+    }
+  ]
+}
