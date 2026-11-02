@@ -6,6 +6,10 @@ Skills for [Claude Code](https://claude.com/claude-code) and any agent that supp
 
 > Not affiliated with Apple, Google, or Anthropic.
 
+![ship ios: build, verify, upload to TestFlight](docs/demo.gif)
+
+*A real run of the iOS path on a native SwiftUI app, identifiers masked. The Xcode build output is omitted from the recording.*
+
 ## Why this exists
 
 Store submission fails in ways the docs don't warn you about. These skills carry the fixes, so the agent doesn't rediscover them one rejected build at a time:
