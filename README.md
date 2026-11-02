@@ -8,7 +8,7 @@ Skills for [Claude Code](https://claude.com/claude-code) and any agent that supp
 
 ![ship ios: build, verify, upload to TestFlight](docs/demo.gif)
 
-*A real run of the iOS path on a native SwiftUI app, identifiers masked. The Xcode build output is omitted from the recording.*
+*A real run of the iOS path on a native SwiftUI app, identifiers masked. `ship ios` is what you say to your agent, not a shell command; the agent runs the upload script. The Xcode build output is omitted from the recording.*
 
 ## Why this exists
 
@@ -17,7 +17,7 @@ Store submission fails in ways the docs don't warn you about. These skills carry
 | You hit | Cause | Handled by |
 |---|---|---|
 | ITMS-90087 / 90086 / 90203 / 91169 on upload | simulator (x86_64) slices left in the IPA by a cached build | `ios-testflight-upload` verifies the IPA before uploading |
-| ITMS-90189 Redundant Binary | build number already uploaded | version check before building |
+| ITMS-90189 Redundant Binary | build number already uploaded | the skill walks the agent through checking the latest build number before building |
 | Build "uploaded" but no IPA on disk | export options set to `destination: upload` | disk-export plist generated for you |
 | Play rejects the AAB: Billing Library < 8.0, target SDK too low, version code already used | store policy changes | `android-playstore-submit` hints per error |
 | Play upload blocked by the child-safety declaration | account-level declaration, not a build problem | documented with the exact menu path |
@@ -29,7 +29,7 @@ Store submission fails in ways the docs don't warn you about. These skills carry
 | Skill | Say | Does |
 |---|---|---|
 | `ship` | "ship ios", "ship android", "ship all" | Runs the pipeline below, stopping for confirmation before anything irreversible |
-| `ios-testflight-upload` | "upload to TestFlight" | build → `altool` upload, with the known ITMS-90087 / ITMS-90189 failures handled |
+| `ios-testflight-upload` | "upload to TestFlight" | build → `altool` upload. The script rejects IPAs with simulator slices (ITMS-90087 family); the skill documents the build-number rule (ITMS-90189) |
 | `ios-appstore-submit` | "submit to the App Store" | Checks the version state, creates the App Store version, runs preflight checks, submits for review |
 | `android-playstore-submit` | "release to Google Play" | build → fastlane supply, with the Play Billing 8.0 and child-safety declaration blockers documented |
 | `app-store-header-image` | "upload the App Store header image" | Product page header / creative assets via the Asset Library (new in Oct 2026, few docs) |
@@ -43,7 +43,7 @@ Claude Code:
 
 ```bash
 /plugin marketplace add kotaroyamazaki/app-shipping-skills
-/plugin install app-shipping-skills
+/plugin install app-shipping-skills@app-shipping-skills
 ```
 
 Any other agent: copy `skills/*` into your agent's skills directory.
@@ -67,7 +67,7 @@ PLAY_SERVICE_ACCOUNT_JSON=~/.config/app-shipping/play-service-account.json
 ADMOB_PUBLISHER_ID=pub-9876543210987654
 ```
 
-`ship.env` holds no secrets. Keys live in `~/.config/app-shipping/`.
+`ship.env` holds no secrets. Keys live in `~/.config/app-shipping/`. The scripts load it as shell (`source`), so only use a `ship.env` you wrote or trust.
 
 How the app gets built is up to you. Optional keys tell the upload scripts which command to run and where the artifact lands (`IOS_BUILD_CMD` / `IOS_IPA_PATH`, `ANDROID_BUILD_CMD` / `ANDROID_AAB_PATH`, plus optional clean commands and `VERSION_NAME` / `BUILD_NUMBER`). Point the `*_PATH` keys at an IPA or AAB built elsewhere to skip the build. Values for common toolchains: [docs/build-recipes.md](docs/build-recipes.md).
 

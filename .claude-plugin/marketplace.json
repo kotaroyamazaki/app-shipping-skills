@@ -14,5 +14,6 @@
       },
       "license": "MIT"
     }
-  ]
+  ],
+  "description": "Agent Skills for shipping a mobile app: build, TestFlight, App Store review, Google Play, AdMob."
 }
